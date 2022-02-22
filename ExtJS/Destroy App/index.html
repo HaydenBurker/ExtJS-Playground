@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.define('DestroyButton', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.destroyBtn',
+    
+    onDestroyBtn: function() {
+        this.getView().items.items[0].destroy();
+    },
+    onDestroyPanel: function() {
+        this.getView().destroy();
+    }
+});
+
+Ext.application({
+    name : 'Fiddle',
+
+    launch : function() {
+        Ext.create({
+            xtype: 'panel',
+            title: 'Destroy Panel',
+            controller: 'destroyBtn',
+            width: 600,
+            height: 400,
+            items: [{
+                xtype: 'button',
+                text: 'Destroy Me!',
+                id: 'destroy',
+                handler: 'onDestroyBtn'
+            }, {
+                xtype: 'button',
+                text: 'Second Button',
+                handler: function() {
+                    this.up('panel').items.items[this.up('panel').items.length - 1].destroy();
+                }
+            }],
+            buttons: [{
+                text: 'Destroy Panel',
+                handler: 'onDestroyPanel'
+            }],
+            renderTo: Ext.getBody()
+        });
+    }
+});
+
+</script>
+</body>
+</html>

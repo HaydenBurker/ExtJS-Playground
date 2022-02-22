@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.application({
+    name: 'Fiddle',
+
+    launch: function () {
+        Ext.create({
+            xtype: 'panel',
+            width: 500,
+            height: 250,
+            bind: {
+                title: '{name.name}'
+            },
+            viewModel: {
+                data: {
+                    name: {
+                        name: 'Hello world!',
+                        originalName: 'Hello world!'
+                    }
+                }
+            },
+            items: [{
+                xtype: 'textfield',
+                name: 'origtext',
+                fieldLabel: 'Original Text',
+                bind: '{name.originalName}'
+            }, {
+                xtype: 'textfield',
+                name: 'bindtext',
+                fieldLabel: 'Binding Text',
+                bind: '{name.name}'
+            }],
+            renderTo: Ext.getBody()
+        });
+    }
+});
+
+
+</script>
+</body>
+</html>

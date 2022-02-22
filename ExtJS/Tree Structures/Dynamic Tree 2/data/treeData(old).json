@@ -1,0 +1,86 @@
+[
+    {
+        "text": "Child 1",
+        "leaf": true
+    },
+    {
+        "text": "New Node 1",
+        "leaf": true
+    },
+    {
+        "text": "Child 3",
+        "expanded": true,
+        "children": [
+            {
+                "text": "Grandchild 1",
+                "leaf": true
+            },
+            {
+                "text": "Grandchild 1",
+                "expanded": true,
+                "children": [
+                    {
+                        "text": "Grandgrandchild 1",
+                        "expanded": true,
+                        "children": [
+                            {
+                                "text": "Grandgrandgrandchild 1",
+                                "leaf": true
+                            },
+                            {
+                                "text": "Grandgrandgrandchild 2",
+                                "leaf": true
+                            },
+                            {
+                                "text": "Grandgrandgrandchild 3",
+                                "expanded": true,
+                                "children": [
+                                    {
+                                        "text": "Grandgrandgrandgrandchild 1",
+                                        "leaf": true
+                                    },
+                                    {
+                                        "text": "Grandgrandgrandgrandchild 2",
+                                        "leaf": true
+                                    }
+                                ]
+                            },
+                            {
+                                "text": "Grandgrandgrandchild 4",
+                                "leaf": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Child 4",
+        "leaf": true
+    },
+    {
+        "text": "Child 5",
+        "expanded": false,
+        "children": [
+            {
+                "text": "Grandchild 1",
+                "expanded": true,
+                "children": [
+                    {
+                        "text": "Grandgrandchild 1",
+                        "leaf": true
+                    },
+                    {
+                        "text": "Grandgrandchild 2",
+                        "leaf": true
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Child 6",
+        "leaf": true
+    }
+]

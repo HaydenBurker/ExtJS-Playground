@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.application({
+    name: 'Border Container',
+
+    launch: function () {
+        Ext.Msg.alert('Border Container', 'Welcome to My Border Container Website!');
+
+        Ext.create('Ext.container.Viewport', {
+            layout: 'border',
+            items: [{
+                region: 'north',
+                html: '<h1 class="x-panel-header">Page Title</h1>',
+                border: false,
+                margin: '0 0 5 0'
+            }, {
+                region: 'west',
+                collapsible: true,
+                title: 'Navigation',
+                width: 150
+                    // could use a TreePanel or AccordionLayout for navigational items
+            }, {
+                region: 'south',
+                title: 'South Panel',
+                collapsible: true,
+                html: 'Information goes here',
+                split: true,
+                height: 100,
+                minHeight: 100
+            }, {
+                region: 'east',
+                title: 'East Panel',
+                collapsible: true,
+                split: true,
+                width: 150,
+                xtype: 'tabpanel', // TabPanel itself has no title
+                activeTab: 0, // First tab active by default
+                items: [{
+                    title: 'Default Tab',
+                    html: 'The first tab\'s content. Others may be added dynamically'
+                }, {
+                    title: 'Second Tab',
+                    html: 'The second tab\'s content. Represents how tabs can be added dynamically'
+                }, {
+                    title: 'Another Tab',
+                    html: '<h1>Decorative tab</h1><p>This tab displays content inside <i>different</i> html tags.</p>'
+                }]
+            }, {
+                region: 'center',
+                xtype: 'tabpanel', // TabPanel itself has no title
+                activeTab: 0, // First tab active by default
+                items: [{
+                    title: 'Default Tab',
+                    html: 'The first tab\'s content. Others may be added dynamically'
+                }, {
+                    title: 'Second Tab',
+                    html: 'The second tab\'s content. Represents how tabs can be added dynamically'
+                }]
+            }]
+        });
+    }
+});
+
+
+</script>
+</body>
+</html>

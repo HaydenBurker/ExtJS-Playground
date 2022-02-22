@@ -1,0 +1,32 @@
+[{
+	"id": "Object0",
+	"name": "My First Object",
+	"desc": "This is the first object."
+}, {
+	"id": "Object1",
+	"name": "Long Description",
+	"desc": "This object has a long description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor, augue sed volutpat congue, diam nibh venenatis ante, vehicula porttitor sapien eros eget nisl. Nullam facilisis ante vel elit commodo, id consequat ex ullamcorper. Donec sed nisl mattis lorem consequat accumsan. In laoreet porta nisl a molestie. Curabitur euismod fermentum nibh, at porta turpis maximus id. Quisque iaculis arcu et bibendum bibendum. Vivamus placerat lorem nisi, ac accumsan mauris venenatis sed. In sed iaculis dolor, id scelerisque eros."
+}, {
+	"id": "Object2",
+	"name": "Hidden Data",
+	"desc": "This object has hidden data.",
+	"hiddenData": "You found me!"
+}, {
+	"id": "Object3",
+	"name": "Multiple Keys",
+	"desc": "Multiple hidden key value pairs",
+	"key1": "value1",
+	"key2": "value2",
+	"key3": "value3",
+	"keyn": "valuen"
+}, {
+	"id": "Object4",
+	"name": "Array",
+	"desc": "This object contains an array",
+	"array": ["Hello", "World!"]
+}, {
+	"id": "Object5",
+	"name": "Object Object",
+	"desc": "This object contains another object",
+	"object": {"array": ["Hello", "World!"], "value1": "asdf", "value2": "jkl;"}
+}]

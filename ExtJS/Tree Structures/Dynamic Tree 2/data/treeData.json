@@ -1,0 +1,96 @@
+[
+    {
+        "text": "New Node 0",
+        "expanded": true,
+        "children": [
+            {
+                "text": "New Node 0",
+                "leaf": true
+            }
+        ]
+    },
+    {
+        "text": "New Node 1",
+        "expanded": true,
+        "children": [
+            {
+                "text": "New Node 0",
+                "expanded": true,
+                "children": [
+                    {
+                        "text": "New Node 0",
+                        "expanded": true,
+                        "children": [
+                            {
+                                "text": "New Node 0",
+                                "expanded": true,
+                                "children": [
+                                    {
+                                        "text": "New Node 0",
+                                        "leaf": true
+                                    },
+                                    {
+                                        "text": "New Node 1",
+                                        "leaf": true
+                                    },
+                                    {
+                                        "text": "New Node 2",
+                                        "leaf": true
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "text": "New Node 1",
+                        "leaf": true
+                    },
+                    {
+                        "text": "New Node 2",
+                        "expanded": true,
+                        "children": [
+                            {
+                                "text": "New Node 0",
+                                "leaf": true
+                            },
+                            {
+                                "text": "New Node 1",
+                                "leaf": true
+                            },
+                            {
+                                "text": "New Node 2",
+                                "expanded": false,
+                                "children": [
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "text": "New Node 1",
+                "expanded": true,
+                "children": [
+                    {
+                        "text": "New Node 0",
+                        "leaf": true
+                    }
+                ]
+            },
+            {
+                "text": "New Node 2",
+                "expanded": true,
+                "children": [
+                    {
+                        "text": "New Node 0",
+                        "leaf": true
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "New Node 2",
+        "leaf": true
+    }
+]

@@ -1,0 +1,21 @@
+[{
+    "firstName": "Jean",
+    "lastName": "Grey",
+    "officeLocation": "Lawrence, KS",
+    "phoneNumber": "(372) 792-6728"
+}, {
+    "firstName": "Phillip",
+    "lastName": "Fry",
+    "officeLocation": "Lawrence, KS",
+    "phoneNumber": "(318) 224-8644"
+}, {
+    "firstName": "Peter",
+    "lastName": "Quill",
+    "officeLocation": "Redwood City, CA",
+    "phoneNumber": "(718) 480-8560"
+}, {
+    "firstName": "Hayden",
+    "lastName": "Burker",
+    "officeLocation": "Redwood City, CA",
+    "phoneNumber": "(718) 480-8560"
+}]

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.define('Fiddle.model.Employee', {
+    extend: 'Ext.data.Model',
+
+    alternateClassName: 'Employee',
+
+    idProperty: 'id',
+
+    fields: [{
+        name: 'id'
+    }, {
+        name: 'name'
+    }, {
+        name: 'email'
+    }, {
+        name: 'start',
+        type: 'date',
+        convert: function(v, record) {
+            return new Date(v);
+        }
+    }, {
+        name: 'salary',
+        type: 'float'
+    }, {
+        name: 'active',
+        type: 'bool'
+    }]
+});
+
+Ext.define('Fiddle.store.Employee', {
+    extend: 'Ext.data.Store',
+
+    alias: 'store.employee',
+
+    model: 'Employee',
+
+    autoLoad: true,
+    autoDestroy: true,
+    autoSync: false,
+
+    proxy: {
+        type: 'ajax',
+        api: {
+            read: 'data.json',
+            create: '/api/Test',
+            update: '/api/Test',
+            destroy: '/api/Test'
+        },
+        actionMethods: {
+            create: 'POST',
+            read: 'GET',
+            update: 'PUT',
+            destroy: 'DELETE'
+        },
+        reader: {
+            type: 'json',
+            rootProperty: 'items'
+        },
+        listeners: {
+            exception: function(proxy, response, operation) {
+                Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });
+            }
+        }
+    },
+    listeners: {
+        beforeload: function() {;
+        },
+
+        message: function(ws, msg) {
+            var data = msg.data;
+            var record = this.getById(data.id);
+            if (record) {
+                switch (msg.operation) {
+                case "update":
+                    record.beginEdit();
+                    record.set('name', data.name);
+                    record.set('email', data.email);
+                    record.set('start', new Date(data.start));
+                    record.set('salary', data.salary);
+                    record.set('active', data.active);
+                    record.endEdit();
+                    record.commit();
+                    break;
+
+                case "remove":
+                    this.remove(record, false);
+                    break;
+                }
+            }
+            var notify = Ext.String.format('Employee was {0}', msg.operation);
+
+        },
+
+        add: {
+            fn: function(s, r, i) {
+                console.log('add', arguments);
+            }
+        },
+
+        remove: {
+            fn: function(s, r, i) {
+                var record = r[0];
+                // if the record exist in other grids
+                if (record.crudState === "R") {
+                    var msg = {
+                        operation: 'remove',
+                        data: record.data
+                    }
+                    console.log('message', msg);
+                }
+            }
+        },
+
+        update: {
+            fn: function(s, r, i) {
+                if (i === "commit") {
+                    var record = r;
+                    // if the record exist in other grids
+                    if (record.crudState === "R") {
+                        var msg = {
+                            operation: 'update',
+                            data: record.data
+                        }
+                        console.log('message', msg);
+                    }
+                }
+            }
+        },
+    }
+});
+
+Ext.define('Fiddle.view.main.WriterController', {
+    extend: 'Ext.app.ViewController',
+
+    alias: 'controller.writer',
+
+    init: function() {
+
+        this.control({
+            'form': {
+                dirtychange: function(form) {
+
+                }
+            },
+
+            'grid': {
+                selectionchange: 'onSelectionchange'
+            },
+
+            'button': {
+                click: function(button) {
+                    switch (button.text.toLowerCase()) {
+                    case 'add':
+                        this.onAdd();
+                        break;
+                    case 'create':
+                        this.onAdd(button.up('form').getValues());
+                        break;
+                    case 'save':
+                        this.onSave();
+                        break;
+                    case 'update':
+                        this.onUpdate(button.up('form').getValues());
+                        break;
+                    case 'reset':
+                        this.onReset();
+                        break;
+                    case 'delete':
+                        this.onDelete();
+                        break;
+                    }
+                }
+            }
+        });
+    },
+
+    onSelectionchange: function(selModel, selected) {
+        if (selected.length > 0) {
+            this.getViewModel().set('employee', selected[0].data);
+        }
+    },
+
+    onSave: function() {
+        var store = this.getView().down('grid').getStore();
+        store.sync({
+            success: function(batch, eOpts) {
+                Ext.Msg.alert('Status', 'Changes saved successfully.');
+            },
+            failure: function(record, eOpts) {
+                Ext.Msg.alert('Status', 'Request failed.');
+            }
+        });
+    },
+
+    onUpdate: function(data) {
+        var store = this.getView().down('grid').getStore();
+        var record = store.getById(data.id);
+
+        if (record) {
+
+            //record.beginEdit();
+            record.set({
+                name: data.name,
+                email: data.email,
+                start: Ext.Date.parse(data.start, 'm/d/Y'),
+                salary: data.salary,
+                active: data.active
+            });
+            //record.endEdit();
+            //record.commit();
+
+            this.getViewModel().set('enableSave', true);
+        }
+    },
+
+    onDelete: function() {
+        var selection = this.getView().down('grid').getSelection()[0];
+        alert()
+        if (selection) {
+            this.view.down('grid').getStore().remove(selection);
+            this.view.down('form').reset();
+            this.getViewModel().set('employee', null);
+        }
+    },
+
+    onAdd: function(employee) {
+        var rec = employee ? employee : new Employee({
+            name: 'Employee Name',
+            salary: 0,
+            email: '',
+            start: new Date()
+        });
+
+        var grid = this.getView().down('grid');
+
+        grid.getStore().insert(0, rec);
+        grid.setSelection(rec);
+
+
+
+        this.getViewModel().set('enableSave', true);
+    },
+
+    onReset: function() {
+        var view = this.getView();
+
+        view.down('grid').getSelectionModel().deselectAll();
+        view.down('form').reset();
+        this.getViewModel().set('employee', null);
+    }
+});
+
+Ext.define('Fiddle.view.main.WriterModel', {
+    extend: 'Ext.app.ViewModel',
+
+    alias: 'viewmodel.writer',
+
+    data: {
+        employee: null,
+        enableSave: false
+    }
+});
+
+Ext.define('Fiddle.view.main.Writer', {
+    extend: 'Ext.container.Container',
+
+    alias: 'widget.writer',
+
+
+    controller: 'writer',
+    viewModel: 'writer',
+
+    layout: {
+        type: 'hbox',
+        pack: 'start',
+        align: 'stretch'
+    },
+    height: 550,
+    padding: '0 0 0 20',
+    //fullscreen: true,
+    items: [
+
+    {
+        itemId: 'grid',
+        xtype: 'writergrid',
+        title: 'User List',
+        flex: 1,
+        store: {
+            type: 'employee'
+        }
+    }, {
+        itemId: 'form',
+        xtype: 'writerform',
+        width: 250,
+        manageHeight: false,
+        margins: '0 0 10 0'
+    }]
+});
+
+Ext.define('Fiddle.view.main.WriterForm', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.writerform',
+
+    requires: ['Ext.form.field.Text'],
+    activeRecord: null,
+    iconCls: 'icon-user',
+    frame: true,
+    title: 'User',
+    defaultType: 'textfield',
+    bodyPadding: 5,
+
+    fieldDefaults: {
+        anchor: '100%',
+        labelAlign: 'right'
+    },
+
+    items: [{
+        xtype: 'hiddenfield',
+        name: 'id',
+        bind: '{employee.id}'
+    }, {
+        fieldLabel: 'Name',
+        name: 'name',
+        allowBlank: false,
+        bind: '{employee.name}'
+    }, {
+        fieldLabel: 'Email',
+        name: 'email',
+        allowBlank: false,
+        bind: '{employee.email}'
+    }, {
+        xtype: 'datefield',
+        fieldLabel: 'Start Date',
+        name: 'start',
+        format: 'm/d/Y',
+        bind: '{employee.start}'
+    }, {
+        xtype: 'numberfield',
+        fieldLabel: 'Salary',
+        name: 'salary',
+        format: '$0,0',
+        bind: '{employee.salary}'
+    }, {
+        xtype: 'checkbox',
+        fieldLabel: 'Active?',
+        name: 'active',
+        bind: '{employee.active}'
+    }],
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'bottom',
+        ui: 'footer',
+        items: ['->', {
+            text: 'Update',
+            bind: {
+                disabled: '{!employee}'
+            },
+            scope: this
+        }, {
+            text: 'Reset',
+            scope: this,
+            bind: {
+                disabled: '{!employee}'
+            },
+        }]
+    }],
+});
+
+Ext.define('Fiddle.view.main.WriterGrid', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.writergrid',
+
+    requires: ['Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.toolbar.TextItem'],
+
+    frame: true,
+    autoWidth: true,
+    autoHeight: true,
+
+    selModel: {
+        allowDeselect: true
+    },
+
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'bottom',
+        ui: 'footer',
+        items: ['->', {
+            text: 'Add',
+            scope: this,
+        }, {
+            text: 'Delete',
+            bind: {
+                disabled: '{!employee}'
+            },
+            scope: this,
+        }, {
+            text: 'Save',
+            scope: this,
+            bind: {
+                disabled: '{!enableSave}'
+            },
+        }]
+    }],
+    columns: [{
+        text: 'ID',
+        width: 40,
+        sortable: true,
+        resizable: false,
+        draggable: false,
+        hideable: false,
+        menuDisabled: true,
+        dataIndex: 'id'
+    },
+
+    {
+        header: 'Name',
+        dataIndex: 'name',
+        flex: 1
+    }, {
+        header: 'Email',
+        dataIndex: 'email',
+        width: 160
+    }, {
+        xtype: 'datecolumn',
+        header: 'Start Date',
+        dataIndex: 'start',
+        width: 135
+    }, {
+        xtype: 'numbercolumn',
+        header: 'Salary',
+        dataIndex: 'salary',
+        format: '$0,0',
+        width: 130
+    }, {
+        xtype: 'checkcolumn',
+        header: 'Active',
+        dataIndex: 'active',
+        width: 65,
+        menuDisabled: true
+    }]
+});
+
+Ext.define('Fiddle.view.main.Main', {
+    extend: 'Ext.tab.Panel',
+    xtype: 'app-main',
+
+    requires: ['Ext.plugin.Viewport', 'Ext.window.MessageBox', ],
+
+    ui: 'navigation',
+
+    tabBarHeaderPosition: 1,
+    titleRotation: 0,
+    tabRotation: 0,
+
+    header: false,
+
+    tabBar: {
+        flex: 1,
+        layout: {
+            align: 'stretch',
+            overflowHandler: 'none'
+        }
+    },
+
+    responsiveConfig: {
+        tall: {
+            headerPosition: 'top'
+        },
+        wide: {
+            headerPosition: 'left'
+        }
+    },
+
+    defaults: {
+        bodyPadding: 20,
+        tabConfig: {
+            plugins: 'responsive',
+            responsiveConfig: {
+                wide: {
+                    iconAlign: 'left',
+                    textAlign: 'left'
+                },
+                tall: {
+                    iconAlign: 'top',
+                    textAlign: 'center',
+                    width: 120
+                }
+            }
+        }
+    },
+    items: [{
+        title: 'Employees',
+        iconCls: 'fa-user',
+        height: 450,
+        items: [{
+            xtype: 'writer'
+        }]
+    }]
+});
+
+Ext.onReady(function() {
+Ext.application({
+    name: 'Fiddle',
+
+    mainView: 'Fiddle.view.main.Main'
+});
+});
+
+
+</script>
+</body>
+</html>

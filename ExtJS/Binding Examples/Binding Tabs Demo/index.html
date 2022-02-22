@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.define('DestroyButton', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.destroyBtn',
+    
+
+});
+
+Ext.application({
+    name : 'Fiddle',
+
+    launch : function() {
+        Ext.create({
+            xtype: 'tabpanel',
+            title: 'Binding Demo',
+            controller: 'destroyBtn',
+            width: 600,
+            height: 400,
+            viewModel: {
+                data: {
+                    text: 'Hello world!'
+                }
+            },
+            items: [{
+                xtype: 'panel',
+                title: 'Bind 1',
+                items: [{
+                    xtype: 'textfield',
+                    name: 'bind1',
+                    fieldLabel: 'First Text Field',
+                    bind: '{text}'
+                }]
+            }, {
+                xtype: 'panel',
+                title: 'Bind 2',
+                items: [{
+                    xtype: 'textfield',
+                    name: 'bind2',
+                    fieldLabel: 'Second Text Field',
+                    bind: '{text}'
+                }]
+            }],
+            renderTo: Ext.getBody()
+        });
+    }
+});
+
+</script>
+</body>
+</html>

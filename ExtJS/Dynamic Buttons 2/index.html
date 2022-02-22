@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.define('playgroundStore', {
+    extend: 'Ext.data.Store',
+    alias: 'store.playgroundStore'
+})
+
+Ext.define('playgroundController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.playgroundController',
+    
+    // Update Control Panel GUI
+    
+    newTextField: function(index, name, bind) {
+        let content = {
+            xtype: 'textfield',
+            name: 'name',
+            fieldLabel: name,
+            bind: bind
+        };
+        index.add(content);
+    },
+    
+    newButton: function(index, name, handler, location) {
+        let content = {
+            xtype: 'button',
+            text: name,
+            handler: handler
+        };
+        index.insert(location, content);
+    },
+    
+    newTab: function(index, name, location) {
+        let content = {
+            xtype: 'panel',
+            title: name,
+            scrollable: true
+        };
+        index.insert(location, content);
+    },
+    
+    addTabControl: function() {
+        this.destroyControl();
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        
+        this.newTextField(controlPanel, 'Tab Name', '{tabName}');
+        this.newTextField(controlPanel, 'Tab Location', '{tabLocation}');
+        
+        this.newButton(controlPanel, 'submit', 'addTab');
+    },
+    
+    removeTabControl: function() {
+        this.destroyControl();
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        
+        this.newTextField(controlPanel, 'Tab Location', '{tabLocation}');
+        
+        this.newButton(controlPanel, 'submit', 'removeTab');
+    },
+    
+    addButtonControl: function() {
+        this.destroyControl();
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+
+        this.newTextField(controlPanel, 'Button Name', '{buttonName}');
+        this.newTextField(controlPanel, 'Tab Location', '{tabLocation}');
+        this.newTextField(controlPanel, 'Button Location', '{buttonLocation}');
+        
+        this.newButton(controlPanel, 'submit', 'addButton');
+    },
+    
+    removeButtonControl: function() {
+        this.destroyControl();
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        
+        this.newTextField(controlPanel, 'Tab Location', '{tabLocation}');
+        this.newTextField(controlPanel, 'Button Location', '{buttonLocation}');
+        
+        this.newButton(controlPanel, 'submit', 'removeButton');
+    },
+    
+    destroyControl: function() {
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        let cplength = controlPanel.items.length;
+        for (var i = 0; i < cplength; i++){
+            controlPanel.items.items[0].destroy();
+        }
+    },
+    
+    // ----------------Playground Manipulation----------------
+    
+    validIndex: function(index, length) {
+        if (index < length && index >= 0 && Number.isInteger(index))
+            return true;
+        return false;
+    },
+    
+    addTab: function() {
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        let playground = Ext.getCmp('myApp').items.items[1];
+        let name = controlPanel.items.items[0].getValue();
+        let tabIndex = parseInt(controlPanel.items.items[1].getValue());
+        
+        if (this.validIndex(tabIndex, playground.items.length + 1)){
+            if (name == '')
+                name = 'New Tab ' + playground.items.length;
+            
+            this.newTab(playground, name, tabIndex);
+        }
+        else
+            Ext.Msg.alert('Invalid Location', 'No Tab available at Location ' + tabIndex + '!');
+    },
+    
+    removeTab: function() {
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        let playground = Ext.getCmp('myApp').items.items[1];
+        let tabIndex = parseInt(controlPanel.items.items[0].getValue());
+        
+        if (this.validIndex(tabIndex, playground.items.length)){
+            playground.items.items[tabIndex].destroy();
+        }
+        else
+            Ext.Msg.alert('Invalid Location', 'No Tab available at Location ' + tabIndex + '!');
+    },
+    
+    addButton: function() {
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        let playground = Ext.getCmp('myApp').items.items[1];
+        let tabIndex = parseInt(controlPanel.items.items[1].getValue());
+        
+        if (this.validIndex(tabIndex, playground.items.length)) {
+            let tab = playground.items.items[tabIndex];
+            let name = controlPanel.items.items[0].getValue();
+            let buttonIndex = parseInt(controlPanel.items.items[2].getValue());
+            
+            if (this.validIndex(buttonIndex, tab.items.length + 1)) {
+                if (name == '')
+                    name = 'New Button ' + tab.items.length;
+                this.newButton(tab, name, '', buttonIndex);
+            }
+            else
+                Ext.Msg.alert('Invalid Location', 'Button out of range at Location ' + buttonIndex + '!');
+        }
+        else
+            Ext.Msg.alert('Invalid Location', 'No Tab available at Location ' + tabIndex + '!');
+    },
+    
+    removeButton: function() {
+        let controlPanel = Ext.getCmp('myApp').items.items[0];
+        let playground = Ext.getCmp('myApp').items.items[1];
+        let tabIndex = parseInt(controlPanel.items.items[0].getValue());
+        
+        if (this.validIndex(tabIndex, playground.items.length)) {
+            let tab = playground.items.items[tabIndex];
+            let buttonIndex = parseInt(controlPanel.items.items[1].getValue());
+            
+            if (this.validIndex(buttonIndex, tab.items.length)){
+                tab.items.items[buttonIndex].destroy();
+            }
+            else
+                Ext.Msg.alert('Invalid Location', 'Button out of range at Location ' + buttonIndex + '!');
+        }
+        else
+            Ext.Msg.alert('Invalid Location', 'No Tab available at Location ' + tabIndex + '!');
+    }
+});
+
+
+
+Ext.application({
+    name : 'Dynamic Buttons',
+
+    launch : function() {
+        Ext.create({
+            xtype: 'panel',
+            layout: 'vbox',
+            id: 'myApp',
+            controller: 'playgroundController',
+            defaults: {
+                frame: true
+            },
+            store: {
+                type: 'playgroundStore'
+            },
+            viewModel: {
+                data: {
+                    name: 'Hello world!', // Placeholder bind
+                    tabName: '',
+                    tabLocation: '0',
+                    buttonName: '',
+                    buttonLocation: '0'
+                }
+            },
+            items: [{
+                xtype: 'panel',
+                title: 'Control Panel',
+                border: false,
+                bodyPadding: 10,
+                width: 600,
+                height: 400,
+                buttons: [{
+                    text: 'Add Tab',
+                    handler: 'addTabControl'
+                }, {
+                    text: 'Remove Tab',
+                    handler: 'removeTabControl'
+                }, {
+                    text: 'Add Button',
+                    handler: 'addButtonControl'
+                }, {
+                    text: 'Remove Button',
+                    handler: 'removeButtonControl'
+                }]
+            }, {
+                xtype: 'tabpanel',
+                title: 'Playground Panel',
+                border: false,
+                width: 600,
+                height: 400,
+            }],
+            renderTo: Ext.getBody()
+        });
+    }
+});
+
+</script>
+</body>
+</html>

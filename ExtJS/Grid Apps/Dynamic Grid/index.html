@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.application({
+    name : 'Fiddle',
+
+    launch : function() {
+        Ext.create({
+            xtype: 'panel',
+            border: false,
+            defaults: {
+                border: false,
+                frame: true
+            },
+            bodyPadding: 10,
+            id: 'myApp',
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'panel',
+                margin: '0 10 0 0',
+                items: [{
+                    xtype: 'grid',
+                    title: 'Grid',
+                    border: false,
+                    width: 300,
+                    height: 400,
+                    listeners: {
+                        cellclick: function() {
+                            let updateGrid = Ext.getCmp('myApp').items.items[1];
+                            
+                            //updateGrid.buttons.items[1].enable();
+                            updateGrid.dockedItems.items[1].items.items[1].enable();
+                            //console.log(this.getSelection()[0].data.column1);
+                            //console.log(this.getStore().getData().items[0].data.column1);
+                            updateGrid.items.items[0].setValue(this.getSelection()[0].data.column1);
+                            updateGrid.items.items[1].setValue(this.getSelection()[0].data.column2);
+                        }
+                    },
+                    store: {
+                        data: [
+                            {'column1': 'Hello', 'column2': 'World!'}
+                        ]
+                    },
+                    columns: [{
+                        text: 'Column 1',
+                        dataIndex: 'column1',
+                        flex: 1
+                    }, {
+                        text: 'Column 2',
+                        dataIndex: 'column2',
+                        flex: 1
+                    }]
+                }]
+            }, {
+                xtype: 'panel',
+                title: 'Update Grid',
+                margin: '0 10 0 0',
+                width: 300,
+                bodyPadding: 10,
+                items: [{
+                    xtype: 'textfield',
+                    name: 'name',
+                    fieldLabel: 'Content 1'
+                }, {
+                    xtype: 'textfield',
+                    name: 'name',
+                    fieldLabel: 'Content 2'
+                }],
+                buttons: [{
+                    text: 'Add',
+                    handler: function() {
+                        let myGrid = Ext.getCmp('myApp').items.items[0].items.items[0];
+                        let updateGrid = Ext.getCmp('myApp').items.items[1];
+                        let column1 = updateGrid.items.items[0].getValue();
+                        let column2 = updateGrid.items.items[1].getValue();
+                        let content = {
+                            'column1': column1,
+                            'column2': column2
+                        };
+                        myGrid.getStore().add(content);
+                    }
+                }, {
+                    text: 'remove',
+                    disabled: true,
+                    handler: function() {
+                        let myGrid = Ext.getCmp('myApp').items.items[0].items.items[0];
+                        //myGrid.getStore().removeAt(0); // Remove at a specific position
+                        myGrid.getStore().remove(myGrid.getSelection()[0]);
+                        this.disable();
+                    }
+                }]
+            }],
+            renderTo: Ext.getBody()
+        })
+    }
+});
+
+</script>
+</body>
+</html>

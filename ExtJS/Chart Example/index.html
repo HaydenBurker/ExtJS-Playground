@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/packages/charts/classic/triton/resources/charts-all.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/packages/charts/classic/triton/resources/charts-all-rtl.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/packages/charts/classic/charts.js"></script>
+</head>
+<body>
+<script>
+Ext.application({
+    name : 'Fiddle',
+
+    launch : function() {
+        Ext.create({
+            xtype: 'chart',
+            renderTo: Ext.getBody(),
+            title: 'Chart Example',
+            width: 600,
+            height: 400,
+            store: {
+                fields: ['name', 'measurement'],
+                autoLoad: true,
+                proxy: {
+                    type: 'ajax',
+                    url: 'data.json',
+                    reader: 'json'
+                }
+            },
+        
+            interactions: {
+                type: 'panzoom'
+            },
+        
+            legend: {
+                docked: 'right'
+            },
+        
+            axes: [{
+                type: 'numeric',
+                position: 'left',
+                grid: true,
+                titleMargin: 20,
+                title: {
+                    text: 'Y Axis'
+                }
+            }, {
+                type: 'category',
+                position: 'bottom',
+                visibleRange: [0, 0.3],
+                titleMargin: 20,
+                title: {
+                    text: 'X Axis'
+                }
+            }],
+        
+            series: [{
+                type: 'area',
+                xField: 'name',
+                yField: ['measurement'],
+                title: ['Data'],
+                style: {
+                    stroke: '#888888',
+                    fillOpacity: 0.8
+                }
+            }]
+        });
+    }
+});
+
+</script>
+</body>
+</html>

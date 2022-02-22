@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<title>My Website</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/classic/theme-triton/resources/theme-triton-all.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.2.0/ext-all.js"> </script>
+<script src=""></script>
+</head>
+<body>
+<script>
+Ext.define('MyViewController', {
+    extend : 'Ext.app.ViewController',
+    alias: 'controller.controlApp',
+
+    // This method is called as a "handler" for the Add button in our view
+    onAddClick: function() {
+        let myApp = Ext.getCmp('myApp');
+        let content = {
+            xtype: 'button',
+            text: 'New Button ' + (myApp.items.length),
+            handler: 'onUpdateClick',
+            tooltip: 'Click me to add new name'
+        }
+        name = Ext.getCmp('controller').items.items[0].getValue();
+        if (name != '')
+            content.text = name;
+        myApp.add(content);
+    },
+    
+    onRemoveFirstClick: function() {
+        let myApp = Ext.getCmp('myApp');
+        myApp.items.items[0].destroy();
+    },
+    
+    onRemoveLastClick: function() {
+        let myApp = Ext.getCmp('myApp');
+        myApp.items.items[myApp.items.length - 1].destroy();
+    }
+});
+
+Ext.define('MyViewDynamic', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.dynamicButtons',
+    onUpdateClick: function(view, index, item, record) {
+        Ext.create({
+            renderTo: Ext.getBody(),
+            xtype: 'form',
+            title: 'Update Name',
+            id: 'dynamicForm',
+            bodyPadding: 10,
+            width: 300,
+            center: true,
+            floating: true,
+            modal: true,
+            viewModel: {
+                data: {newName: record}
+            },
+            items: [{
+                xtype: 'textfield',
+                name: 'updatename',
+                fieldLabel: 'New Name'
+            }],
+            buttons:[{
+                text: 'Cancel',
+                iconCls: 'x-fa fa-close',
+                handler: function() {
+                   this.up('form').destroy();
+                }
+            }, {
+                text: 'Submit',
+                iconCls: 'x-fa fa-check',
+                handler: function() {
+                    let controller = Ext.getCmp('dynamicForm');
+                    let text = controller.items.items[0].getValue();
+                    view.setText(text);
+                    controller.destroy();
+                }
+            }],
+            listeners: {
+                afterrender: function() {
+                    Ext.getCmp('dynamicForm').items.items[0].setValue(view.getText());
+                }
+            }
+        });
+        
+
+    }
+});
+
+Ext.application({
+    name: 'Sencha Employee Directory',
+
+    launch: function() {
+        
+        Ext.create({
+            renderTo: Ext.getBody(),
+            xtype: 'panel',
+            title: 'Control Panel',
+            id: 'controller',
+            width: 400,
+            height: 200,
+            bodyPadding: 10,
+            layout: 'form',
+            controller: 'controlApp',
+            viewModel: {
+                data: {
+                    newName: 'Hello world!'
+                }
+            },
+            buttons: [{
+                text: 'Add',
+                handler: 'onAddClick'
+            }, {
+                text: 'Remove First',
+                handler: 'onRemoveFirstClick'
+            }, {
+                text: 'Remove Last',
+                handler: 'onRemoveLastClick'
+            }],
+            items:[{
+                xtype: 'textfield',
+                name: 'UpdateButton',
+                fieldLabel: 'New Name',
+                bind: '{newName}'
+            }]
+        });
+        
+        Ext.create({
+            renderTo: Ext.getBody(),
+            xtype: 'panel',
+            title: 'Dynamic Panel',
+            scrollable: true,
+            id: 'myApp',
+            width: 400,
+            height: 200,
+            bodyPadding: 10,
+            controller: 'dynamicButtons'
+        });
+    }
+});
+
+
+</script>
+</body>
+</html>
